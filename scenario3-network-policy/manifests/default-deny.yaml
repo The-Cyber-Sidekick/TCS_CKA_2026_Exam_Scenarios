@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: backend
+# The "existing" policy you are handed and must NOT modify. An empty podSelector
+# selects every pod in the backend namespace, and listing Ingress with no rules
+# denies all incoming traffic. This is why the frontend cannot reach the backend
+# until you add an allow policy alongside it.
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress

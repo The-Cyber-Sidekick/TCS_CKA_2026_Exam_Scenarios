@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-frontend
+  namespace: backend
+# Candidate 3 — WRONG. It selects the backend pods but its ingress list is empty, so
+# it allows nothing. Applying this does not restore communication; it is just a second
+# deny on top of the existing default-deny.
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress: []

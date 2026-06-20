@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend
+  namespace: backend
+# Candidate 2 — THE CORRECT, LEAST-PERMISSIVE answer. Ingress to backend pods is
+# allowed ONLY from pods labelled app=frontend, ONLY in the frontend namespace, and
+# ONLY on TCP 80. The namespaceSelector and podSelector are in the SAME from entry,
+# so they are ANDed (both must match), not ORed.
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: frontend
+          podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 80

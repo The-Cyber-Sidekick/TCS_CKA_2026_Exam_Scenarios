@@ -1,0 +1,12 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario3
+# NetworkPolicy is only enforced by a CNI that implements it. kind's bundled
+# kindnet does not reliably enforce policies, so we disable the default CNI and
+# install Calico in setup.sh. podSubnet matches Calico's default IPv4 pool
+# (192.168.0.0/16) so the two agree out of the box.
+networking:
+  disableDefaultCNI: true
+  podSubnet: "192.168.0.0/16"
+nodes:
+  - role: control-plane

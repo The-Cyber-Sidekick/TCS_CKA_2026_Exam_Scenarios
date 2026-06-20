@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-namespace
+  namespace: backend
+# Candidate 1 — TOO PERMISSIVE. It allows ingress to the backend from EVERY pod in
+# the frontend namespace (namespaceSelector only, no podSelector, no port). It would
+# work, but it opens the backend to any workload that lands in that namespace.
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: frontend
