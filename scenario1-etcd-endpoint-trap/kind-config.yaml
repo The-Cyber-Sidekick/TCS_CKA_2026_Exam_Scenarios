@@ -1,0 +1,8 @@
+# Single control-plane node — this scenario is control-plane troubleshooting,
+# so no workers are needed. A dedicated cluster (cka-scenario1) keeps the fault
+# isolated from the main Gateway API learning cluster.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario1
+nodes:
+  - role: control-plane
