@@ -1,0 +1,36 @@
+# Answer key: the deployment with the storage wired in. The only additions over
+# manifests/deployment.yaml are the volumeMounts and volumes blocks (both reference
+# the "mariadb" PVC). The mariadb entrypoint runs as root and chowns /var/lib/mysql,
+# so no securityContext/fsGroup is needed for the volume to be writable.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: mariadb
+  labels:
+    app: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:11.4
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: "changeme"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mariadb

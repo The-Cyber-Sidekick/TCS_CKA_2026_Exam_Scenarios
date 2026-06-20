@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # Must match the PV: empty class (static, no dynamic provisioning) and an explicit
+  # volumeName so it binds to the retained "mariadb" PV rather than a new one.
+  storageClassName: ""
+  volumeName: mariadb
+  resources:
+    requests:
+      storage: 250Mi

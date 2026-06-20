@@ -43,4 +43,3 @@ echo
 echo "🧪 Scenario armed. In ~30-60s the control plane goes down. Then:"
 echo "   • Troubleshoot by hand   — see README (docker exec -it ${CLUSTER}-control-plane bash)"
 echo "   • ./solution.sh          — apply the answer-key fix and recover"
-echo "   • ./run-demo.sh          — capture the full lesson's real output for the video"

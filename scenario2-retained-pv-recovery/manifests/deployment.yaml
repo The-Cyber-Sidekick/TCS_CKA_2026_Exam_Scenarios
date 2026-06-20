@@ -1,0 +1,30 @@
+# The "existing" deployment file you are handed. The container is defined, but the
+# storage wiring is MISSING — your job is to add the volume + volumeMount that point
+# at the PVC you create, then apply it. (Answer key: ../solution/deployment.yaml)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: mariadb
+  labels:
+    app: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:11.4
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: "changeme"
+          ports:
+            - containerPort: 3306
+          # TODO: mount the recovered volume at /var/lib/mysql
+      # TODO: declare a volume backed by the "mariadb" PVC

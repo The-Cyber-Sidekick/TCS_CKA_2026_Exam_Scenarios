@@ -1,0 +1,7 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario2
+# Single node is enough — this is a storage/workload recovery task, not a
+# control-plane or scheduling lesson.
+nodes:
+  - role: control-plane
