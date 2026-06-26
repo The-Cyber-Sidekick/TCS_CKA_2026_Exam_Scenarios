@@ -33,6 +33,7 @@ You'll need these on your PATH (the scenarios are built/tested on WSL2):
 | 1 | [The etcd Endpoint Trap](scenario1-etcd-endpoint-trap/) | Troubleshooting | A migrated single-node cluster whose `kube-apiserver` points at the wrong etcd endpoint, so the control plane is down |
 | 2 | [The Retained Volume](scenario2-retained-pv-recovery/) | Storage | A deleted Deployment whose Retain-policy PV kept the data — recreate the PVC, statically bind it, re-wire the Deployment, and recover with no data loss |
 | 3 | [The Least-Permissive Policy](scenario3-network-policy/) | Services & Networking | A `frontend` blocked from a `backend` by a default-deny ingress policy — pick and apply only the correct, least-permissive NetworkPolicy from three candidates (on a Calico cluster that actually enforces it) |
+| 4 | [Prepare a Node for kubeadm with cri-dockerd](scenario4-cri-dockerd-system-prep/) | Cluster Architecture, Installation & Configuration | A node not yet ready for `kubeadm` — install the cri-dockerd CRI shim, enable its socket, and set + load the kernel params Kubernetes networking needs, all node-side via `docker exec` |
 
 More scenarios coming — each lives in its own directory with a `README.md` and the scripts
 to set it up, break it, and tear it down.

@@ -1,0 +1,9 @@
+# Single control-plane node — this lesson is host/node-level system preparation,
+# not a workload exercise, so one node is all we need. A dedicated cluster
+# (cka-scenario4) gives us a throwaway Debian-bookworm box (the kind node) to
+# install cri-dockerd onto and tune sysctl on, without touching any other cluster.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario4
+nodes:
+  - role: control-plane
