@@ -1,0 +1,69 @@
+# The web application being migrated. A tiny http-echo Deployment behind a Service
+# named `web` on port 80. TLS is terminated at the edge (Ingress today, Gateway after
+# the migration), so the app itself just speaks plain HTTP and returns a known string
+# we can grep for in the verification curl.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: web
+  labels:
+    app: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: hashicorp/http-echo:1.0.0
+          args: ["-text=WEB APP OK", "-listen=:5678"]
+          ports:
+            - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: web
+  labels:
+    app: web
+spec:
+  selector:
+    app: web
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 5678
+---
+# A long-lived curl pod used to probe the edge (Ingress, then Gateway) over HTTPS.
+# We curl with --resolve so the request carries the right SNI/Host for the TLS
+# listener while connecting to the controller's in-cluster Service IP (no host ports,
+# no LoadBalancer needed on kind).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tester
+  namespace: web
+  labels:
+    app: tester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tester
+  template:
+    metadata:
+      labels:
+        app: tester
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.10.1
+          command: ["sleep", "infinity"]

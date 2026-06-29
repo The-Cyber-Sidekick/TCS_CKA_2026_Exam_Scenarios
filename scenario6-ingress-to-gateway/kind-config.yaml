@@ -1,0 +1,23 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario6
+# Single-node cluster. The control-plane is labelled ingress-ready=true so the
+# ingress-nginx kind deployment (which schedules its controller via that nodeSelector)
+# comes up — we need a real Ingress controller for the "existing" resource being
+# migrated. The 80/443 extraPortMappings are harmless; this lesson verifies via an
+# in-cluster tester pod (ClusterIP + curl --resolve), not host ports.
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 8680
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 8643
+        protocol: TCP

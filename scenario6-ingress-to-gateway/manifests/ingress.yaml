@@ -1,0 +1,26 @@
+# The EXISTING resource being migrated. A classic Ingress that terminates HTTPS for
+# gateway.web.k8s.local (using the web-tls Secret) and routes "/" to the web Service.
+# This is what the exam hands you already running; your job is to reproduce its routing
+# with the Gateway API, then delete this Ingress.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web
+  namespace: web
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - gateway.web.k8s.local
+      secretName: web-tls
+  rules:
+    - host: gateway.web.k8s.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80

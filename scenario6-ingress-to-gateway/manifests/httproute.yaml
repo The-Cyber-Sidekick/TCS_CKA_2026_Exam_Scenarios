@@ -1,0 +1,18 @@
+# HTTPRoute: same host as the Ingress, path / -> the web Service on port 80.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: web-route
+  namespace: web
+spec:
+  parentRefs:
+    - name: web-gateway
+  hostnames:
+    - gateway.web.k8s.local
+  rules:
+    - matches:
+        - path:
+            value: /
+      backendRefs:
+        - name: web
+          port: 80

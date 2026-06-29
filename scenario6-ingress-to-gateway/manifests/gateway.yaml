@@ -1,0 +1,17 @@
+# Gateway: an HTTPS listener on 443 that terminates TLS with the web-tls Secret.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+  namespace: web
+spec:
+  gatewayClassName: eg
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: gateway.web.k8s.local
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: web-tls
