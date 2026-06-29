@@ -1,0 +1,26 @@
+# Answer key: identical to configmap.yaml except ssl_protocols allows ONLY TLSv1.3.
+# In the real exam you would `kubectl -n nginx-static edit configmap nginx-config` and
+# change the one ssl_protocols line; here we keep the corrected file for a clean,
+# reproducible apply. A rolling restart is still required for nginx to re-read it.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx-static
+data:
+  default.conf: |
+    server {
+        listen 443 ssl;
+        server_name _;
+
+        ssl_certificate     /etc/nginx/tls/tls.crt;
+        ssl_certificate_key /etc/nginx/tls/tls.key;
+
+        # Only TLS 1.3 is permitted now. TLS 1.2 handshakes are rejected.
+        ssl_protocols TLSv1.3;
+
+        location / {
+            default_type text/plain;
+            return 200 "TLS OK\n";
+        }
+    }

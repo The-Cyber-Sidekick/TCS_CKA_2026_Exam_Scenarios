@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-static
+  namespace: nginx-static
+  labels:
+    app: nginx-static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-static
+  template:
+    metadata:
+      labels:
+        app: nginx-static
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            # The server block lives in a ConfigMap so config changes are a
+            # ConfigMap edit + rolling restart, not an image rebuild.
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+            # Self-signed cert/key (a TLS Secret created by setup.sh via openssl).
+            - name: tls
+              mountPath: /etc/nginx/tls
+              readOnly: true
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: tls
+          secret:
+            secretName: nginx-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-static
+  namespace: nginx-static
+  labels:
+    app: nginx-static
+spec:
+  selector:
+    app: nginx-static
+  ports:
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443

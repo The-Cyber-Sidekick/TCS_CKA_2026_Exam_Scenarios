@@ -1,0 +1,25 @@
+# Baseline (armed) state: nginx serves HTTPS allowing BOTH TLS 1.2 and TLS 1.3.
+# The exam task is to tighten this to TLS 1.3 only. This is the file setup.sh applies
+# to arm the scenario; the fix lives in configmap-tls13.yaml.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx-static
+data:
+  default.conf: |
+    server {
+        listen 443 ssl;
+        server_name _;
+
+        ssl_certificate     /etc/nginx/tls/tls.crt;
+        ssl_certificate_key /etc/nginx/tls/tls.key;
+
+        # Allowed TLS versions. Task: leave ONLY TLSv1.3 here.
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        location / {
+            default_type text/plain;
+            return 200 "TLS OK\n";
+        }
+    }

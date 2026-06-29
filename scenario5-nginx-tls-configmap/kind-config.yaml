@@ -1,0 +1,7 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario5
+# Plain single-node cluster. This is a host-side kubectl lesson (ConfigMap edit +
+# rolling restart), so the default kindnet CNI is fine — no NetworkPolicy here.
+nodes:
+  - role: control-plane
