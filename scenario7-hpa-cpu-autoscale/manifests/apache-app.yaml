@@ -1,0 +1,55 @@
+# The workload the HPA will scale, plus its Service. The classic php-apache image from
+# the Kubernetes HPA walkthrough: a CPU-burning PHP endpoint behind Apache. The exam
+# hands you this Deployment already running; your job is only to autoscale it.
+#
+# The single most important line for this scenario is the container's
+# `resources.requests.cpu`. A CPU *utilization* target (50% of requested CPU) is
+# meaningless without a request to be a percentage OF, so an HPA on a request-less
+# Deployment reports TARGETS <unknown>/50% and never scales. 200m request -> 50% target
+# means the HPA acts at ~100m per pod.
+#
+# (Service first, Deployment last, so `cat`-ing this file ends on the resources block —
+#  that's the line the lesson points at when reading the manifest.)
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-server
+  namespace: autoscale
+  labels:
+    app: apache-server
+spec:
+  selector:
+    app: apache-server
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-server
+  namespace: autoscale
+  labels:
+    app: apache-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache-server
+  template:
+    metadata:
+      labels:
+        app: apache-server
+    spec:
+      containers:
+        - name: php-apache
+          image: registry.k8s.io/hpa-example
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 200m
+            limits:
+              cpu: 500m

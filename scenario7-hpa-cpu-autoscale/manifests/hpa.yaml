@@ -1,0 +1,35 @@
+# Answer key — the HorizontalPodAutoscaler the task asks for.
+#
+# Why this is hand-authored and not `kubectl autoscale`:
+#   kubectl autoscale deployment apache-server --cpu-percent=50 --min=1 --max=4
+# gets you min/max and the CPU target in one line. On current kubectl the dry-run even
+# emits autoscaling/v2 with the target already in metrics[]. But there is NO flag for a
+# scaleDown stabilization window: that field only exists under spec.behavior. So generate
+# the skeleton with --dry-run=client -o yaml if you like, then add the behavior block
+# yourself before applying.
+#
+# The trap from the walkthrough: in autoscaling/v2 the CPU target belongs inside metrics[]
+# as averageUtilization. Pasting the old v1 spec.targetCPUUtilizationPercentage field next
+# to a v2 behavior block -> "unknown field ... targetCPUUtilizationPercentage".
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: apache-server
+  namespace: autoscale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: apache-server
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 30

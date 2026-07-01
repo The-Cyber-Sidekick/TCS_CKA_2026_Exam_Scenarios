@@ -1,0 +1,8 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario7
+# Single-node cluster. This lesson is pure control-plane: a Deployment, metrics-server,
+# and a HorizontalPodAutoscaler. No ingress, no host ports, no LoadBalancer needed —
+# all verification is `kubectl get/describe hpa` against the API server.
+nodes:
+  - role: control-plane
