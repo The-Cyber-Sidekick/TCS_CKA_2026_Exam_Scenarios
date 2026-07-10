@@ -37,6 +37,7 @@ You'll need these on your PATH (the scenarios are built/tested on WSL2):
 | 5 | [Tighten nginx to TLS 1.3](scenario5-nginx-tls-configmap/) | Workloads & Scheduling | An `nginx-static` Deployment whose `nginx-config` ConfigMap allows TLS 1.2 + 1.3 — edit it down to TLS 1.3 only, then `rollout restart` so nginx re-reads it and a pinned TLS 1.2 request fails |
 | 6 | [Migrate Ingress to the Gateway API](scenario6-ingress-to-gateway/) | Services & Networking | A `web` app exposed over HTTPS by a classic Ingress — migrate it to the Gateway API by authoring a `Gateway` (HTTPS listener, reusing the same TLS Secret) and an `HTTPRoute`, verify HTTPS through the Gateway, then delete the Ingress last |
 | 7 | [Autoscale a Deployment with an HPA](scenario7-hpa-cpu-autoscale/) | Workloads & Scheduling | An `apache-server` Deployment to autoscale — create an **autoscaling/v2** HorizontalPodAutoscaler (CPU 50%, min 1 / max 4) and finish it in YAML by hand for the one field `kubectl autoscale` can't set: a 30s `scaleDown` stabilization window under `spec.behavior` |
+| 8 | [Install a CNI (flannel)](scenario8-cni-flannel-install/) | Services & Networking | A two-node cluster with no CNI, so every node is NotReady — install the provided flannel manifest, watch it CrashLoop, fix the `net-conf.json` `Network` to match the cluster's `192.168.0.0/16` pod CIDR, and prove cross-node pod connectivity |
 
 More scenarios coming — each lives in its own directory with a `README.md` and the scripts
 to set it up, break it, and tear it down.
