@@ -1,0 +1,14 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario9
+# Two nodes and NO default CNI, so installing one is the whole exercise. Unlike
+# scenario 8 (the pod-CIDR mismatch), the pod CIDR here MATCHES Calico's default IP pool
+# (192.168.0.0/16) on purpose: this question is about CHOOSING a CNI that can enforce
+# NetworkPolicy (flannel can't, Calico can) and PROVING the enforcement, not about CIDR
+# reconciliation. A second node makes the pod-to-pod test cross nodes for real.
+networking:
+  disableDefaultCNI: true
+  podSubnet: "192.168.0.0/16"
+nodes:
+  - role: control-plane
+  - role: worker

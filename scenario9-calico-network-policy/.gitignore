@@ -1,0 +1,5 @@
+# Generated capture + render artifacts (regenerate with the scripts)
+out/
+# Large pinned Calico manifests (setup.sh downloads them)
+manifests/operator-crds.yaml
+manifests/tigera-operator.yaml

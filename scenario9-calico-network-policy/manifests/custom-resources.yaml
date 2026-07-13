@@ -1,0 +1,11 @@
+# The Installation resource: the Tigera operator watches for this and deploys Calico
+# to match it. The ipPool cidr MUST agree with the cluster's pod CIDR (192.168.0.0/16).
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  calicoNetwork:
+    ipPools:
+      - cidr: 192.168.0.0/16
+        encapsulation: VXLANCrossSubnet

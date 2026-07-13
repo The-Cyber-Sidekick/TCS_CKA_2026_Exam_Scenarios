@@ -1,0 +1,12 @@
+# Default-deny-all, straight from the Kubernetes docs: the empty podSelector selects
+# EVERY pod in the namespace; both policyTypes with no rules = deny all traffic.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: default
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
