@@ -1,0 +1,11 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-scenario10
+# Single node with the default CNI — this question is about HELM (repo add ->
+# template -> install), not about networking or nodes. Argo CD's ~7 pods run fine
+# on one node. The trap lives in the API, not the infrastructure: the exam question
+# claims "the Argo CD CRDs have already been pre-installed in the cluster", and in
+# this lab (as in the source walkthrough) they are NOT — a fresh cluster has no
+# argoproj.io CRDs, which is exactly what makes the install crashloop teachable.
+nodes:
+  - role: control-plane

@@ -1,0 +1,6 @@
+# Generated capture + render artifacts (regenerate with the scripts)
+out/
+# The learner's generated Helm template (the task's own artifact)
+argo-helm.yaml
+# Pinned Argo CD CRD manifests (setup.sh downloads them; application-crd alone is ~500KB)
+manifests/crds/
